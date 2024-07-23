@@ -5,28 +5,71 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class MySQLConnector:
-    try:
-        con = mysql.connector.connect(
-            host="localhost",
-            port=3307,
-            database=os.getenv("DATABASE"),
-            user="root",
-            password=os.getenv("ROOT_PASSWORD")
-        )
-        print("Connection successful")
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
+    def __init__(self):
+        try:
+            self.con = mysql.connector.connect(
+                host="localhost",
+                port=3307,
+                database=os.getenv("DATABASE"),
+                user="root",
+                password=os.getenv("ROOT_PASSWORD")
+            )
+            print("Connection successful")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
 
-    def __init__(self) -> None:
-        pass
-
-    def __open_connect(self):
+    def __enter__(self):
         self.cursor = self.con.cursor()
+        return self
 
-    def __close_cursor(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         self.cursor.close()
-
-    def __close_con(self):
         self.con.close()
+        print("Conexao fechou")
 
-connector = MySQLConnector()
+    def __table_exists(self, table_name):
+        self.cursor.execute(f"SHOW TABLES LIKE '{table_name}'")
+        result = self.cursor.fetchone()
+        return result is not None
+
+    def _create_tables(self):
+        table = {}
+        if not self.__table_exists("Proposicao"): table["Proposicao"] = (
+                "CREATE TABLE IF NOT EXISTS Proposicao ("
+                "  id INT AUTO_INCREMENT PRIMARY KEY,"
+                "  author VARCHAR(255),"
+                "  presentationDate TIMESTAMP,"
+                "  ementa TEXT,"
+                "  regime VARCHAR(255),"
+                "  situation VARCHAR(255),"
+                "  propositionType VARCHAR(255),"
+                "  number VARCHAR(255),"
+                "  year INT,"
+                "  city VARCHAR(255) DEFAULT 'Belo Horizonte',"
+                "  state VARCHAR(255) DEFAULT 'Minas Gerais'"
+                ") ENGINE=InnoDB"
+            )
+
+        if not self.__table_exists("Tramitacoes"): table["Tramitacoes"] = (
+                "CREATE TABLE IF NOT EXISTS Tramitacoes ("
+                "  id INT AUTO_INCREMENT PRIMARY KEY,"
+                "  createAt TIMESTAMP,"
+                "  description TEXT,"
+                "  local VARCHAR(255),"
+                "  propositionId INT,"
+                "  FOREIGN KEY (propositionId) REFERENCES Proposicao(id)"
+                ") ENGINE=InnoDB"
+            )
+
+        for table_name, table_creation_query in table.items():
+            try:
+                print(f"Creating table {table_name}...")
+                self.cursor.execute(table_creation_query)
+                print(f"Table {table_name} created successfully.")
+            except mysql.connector.Error as err:
+                print(err.msg)
+
+
+# if __name__ == "__main__":
+#     with MySQLConnector() as connector:
+#         connector._create_tables()
