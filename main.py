@@ -1,6 +1,7 @@
 from controller.run_initial import RunInitial
 from controller.get_info_api import GetInfoAPI
 from controller.infos_clean import InfosClean
+from controller.data_frame_uploader import DataFrameUploader
 
 
 if __name__ == '__main__':
@@ -15,4 +16,6 @@ if __name__ == '__main__':
 
     
     infos_clean = InfosClean(infos_api.results)
+    uploader = DataFrameUploader(infos_clean.df_proposicao_initial)
+    uploader.upload_to_db('Proposicao')
     

@@ -21,10 +21,31 @@ class InfosClean:
 
         df_proposicao = pd.DataFrame(data_for_dataframe, columns=list_keys_proposicao)
 
-        print(df_proposicao)
+        df_proposicao.rename(columns={'numero': 'number', 'ano': 'year', 'autor': 'author', 'situacao': 'situation',
+                                      'dataPublicacao': 'presentationDate'}, inplace=True)
+
+        dtype_mapping = {
+            'number': 'str',
+            'year': 'int',
+            'author': 'str',
+            'situation': 'str',
+            'presentationDate': 'datetime64[ns]',  # 'datetime64[ns]' é usado para datas
+            'ementa': 'str',
+            'regime': 'str',
+            'situation': 'str'
+        }
+
+        df_proposicao = df_proposicao.astype(dtype_mapping)
+
+        df_proposicao['author'] = df_proposicao['author'].apply(self.remove_extra_spaces)
 
         return df_proposicao
     
 
     def _create_first_df_tramitacao(self, api_results):
         pass
+
+    def remove_extra_spaces(self, text):
+        if isinstance(text, str):  # Verifica se a entrada é uma string
+            return ' '.join(text.split())
+        return text
