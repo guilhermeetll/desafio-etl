@@ -43,7 +43,13 @@ Desenvolver um pipeline de dados em Python para extrair informações sobre prop
     cd <DIRETORIO_DO_REPOSITORIO>
     ```
 
-2.	Construir e Subir os Containers:
+2.	Crie um arquivo '.env' com os nomes e as informações:
+    ```
+    ROOT_PASSWORD=<SENHA_PARA_ACESSO>
+    DATABASE=db_proposicoes
+    ```
+
+3.	Construir e Subir os Containers:
     ```
     docker-compose up --build
     ```
