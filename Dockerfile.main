@@ -1,17 +1,11 @@
-# Use a imagem base oficial do Python
 FROM python:3.9-slim
 
-# Define o diretório de trabalho no container
 WORKDIR /app
 
-# Copia o arquivo requirements.txt para o diretório de trabalho
 COPY requirements.txt .
 
-# Instala as dependências do Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todos os arquivos do diretório atual para o diretório de trabalho do container
 COPY . .
 
-# Define o comando padrão para iniciar o script main.py
 CMD ["python", "main.py"]

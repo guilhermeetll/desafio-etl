@@ -6,19 +6,40 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class MySQLConnector:
+    """
+    Classe responsável por estabelecer a conexão com o banco de dados MySQL.
+
+    Métodos:
+        __init__: Inicializa a classe e tenta conectar ao banco de dados.
+        __create_con: Tenta criar a conexão com o banco de dados.
+        __enter__: Inicializa o cursor para operações no banco de dados.
+        __exit__: Fecha o cursor e a conexão com o banco de dados.
+    """
+
     def __init__(self):
+        """
+        Inicializa a classe e tenta conectar ao banco de dados.
+        Continua tentando até que a conexão seja bem-sucedida.
+        """
         while True:
             try:
                 self.__create_con()
-                break
+                break # Sai do loop se a conexão for bem-sucedida
             except mysql.connector.Error as err:
-                time.sleep(1)
+                time.sleep(1) # Espera 1 segundo antes de tentar novamente
 
     def __enter__(self):
+        """
+        Inicializa o cursor para operações no banco de dados.
+        Retorna a instância da classe.
+        """
         self.cursor = self.con.cursor()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """
+        Fecha o cursor e a conexão com o banco de dados.
+        """
         self.cursor.close()
         self.con.close()
 
@@ -28,6 +49,10 @@ class MySQLConnector:
         return result is not None
     
     def __create_con(self):
+        """
+        Tenta criar a conexão com o banco de dados.
+        Define a conexão como um atributo da classe.
+        """
         self.con = mysql.connector.connect(
             host="db",
             port=3306,
@@ -37,6 +62,10 @@ class MySQLConnector:
         )
 
     def _create_tables(self):
+        """
+        Cria tabela de Proposicao caso não exista
+        Cria tabela de Tramitacao caso não exista
+        """
         table = {}
         if not self.__table_exists("Proposicao"): table["Proposicao"] = (
                 "CREATE TABLE IF NOT EXISTS Proposicao ("
