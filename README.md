@@ -54,4 +54,14 @@ Desenvolver um pipeline de dados em Python para extrair informações sobre prop
     docker-compose up --build
     ```
 
+### Dica:
+
+- Caso queria usar um layout para visualizar e modificar os dados entre em:
+```
+http://localhost:3308
+```
+- Usuário = root
+- Senha = <SENHA_PARA_ACESSO_CONFIGURADA_NO_.ENV>
+
+
 **O código Python será executado automaticamente quando o container da aplicação for iniciado. O script Python realizará a extração, limpeza e carregamento dos dados.**
