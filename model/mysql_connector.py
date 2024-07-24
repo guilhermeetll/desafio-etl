@@ -14,7 +14,6 @@ class MySQLConnector:
                 user="root",
                 password=os.getenv("ROOT_PASSWORD")
             )
-            print("Connection successful")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
@@ -25,7 +24,6 @@ class MySQLConnector:
     def __exit__(self, exc_type, exc_value, traceback):
         self.cursor.close()
         self.con.close()
-        print("Conexao fechou")
 
     def __table_exists(self, table_name):
         self.cursor.execute(f"SHOW TABLES LIKE '{table_name}'")
@@ -42,18 +40,18 @@ class MySQLConnector:
                 "  ementa TEXT,"
                 "  regime VARCHAR(500),"
                 "  situation VARCHAR(500),"
-                "  propositionType VARCHAR(500),"
-                "  number VARCHAR(500),"
+                "  propositionType VARCHAR(250),"
+                "  number VARCHAR(250),"
                 "  year INT,"
-                "  city VARCHAR(500) DEFAULT 'Belo Horizonte',"
-                "  state VARCHAR(500) DEFAULT 'Minas Gerais'"
+                "  city VARCHAR(250) DEFAULT 'Belo Horizonte',"
+                "  state VARCHAR(250) DEFAULT 'Minas Gerais'"
                 ") ENGINE=InnoDB"
             )
 
-        if not self.__table_exists("Tramitacoes"): table["Tramitacoes"] = (
-                "CREATE TABLE IF NOT EXISTS Tramitacoes ("
+        if not self.__table_exists("Tramitacao"): table["Tramitacao"] = (
+                "CREATE TABLE IF NOT EXISTS Tramitacao ("
                 "  id INT AUTO_INCREMENT PRIMARY KEY,"
-                "  createAt TIMESTAMP,"
+                "  createdAt TIMESTAMP,"
                 "  description TEXT,"
                 "  local VARCHAR(500),"
                 "  propositionId INT,"
@@ -68,8 +66,3 @@ class MySQLConnector:
                 print(f"Table {table_name} created successfully.")
             except mysql.connector.Error as err:
                 print(err.msg)
-
-
-# if __name__ == "__main__":
-#     with MySQLConnector() as connector:
-#         connector._create_tables()

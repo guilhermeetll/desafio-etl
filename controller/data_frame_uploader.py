@@ -4,7 +4,7 @@ import pandas as pd
 
 class DataFrameUploader:
     def __init__(self, df: pd.DataFrame):
-        self.df = df.drop(columns=['presentationDate'])
+        self.df = df
 
     def upload_to_db(self, table_name: str):
         for _, row in self.df.iterrows():

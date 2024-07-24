@@ -9,7 +9,7 @@ class InfosClean:
 
 
     def _create_first_df_proposicao(self, api_results):
-        list_keys_proposicao = ['numero', 'ano', 'autor', 'ementa', 'situacao', 'dataPublicacao', 'regime', 'city', 'state']
+        list_keys_proposicao = ['numero', 'ano', 'autor', 'ementa', 'situacao', 'dataPublicacao', 'regime', 'siglaTipoProjeto', 'city', 'state']
 
         data_for_dataframe = []
 
@@ -22,7 +22,7 @@ class InfosClean:
         df_proposicao = pd.DataFrame(data_for_dataframe, columns=list_keys_proposicao)
 
         df_proposicao.rename(columns={'numero': 'number', 'ano': 'year', 'autor': 'author', 'situacao': 'situation',
-                                      'dataPublicacao': 'presentationDate'}, inplace=True)
+                                      'dataPublicacao': 'presentationDate', 'siglaTipoProjeto': 'propositionType'}, inplace=True)
 
         dtype_mapping = {
             'number': 'str',
@@ -30,6 +30,7 @@ class InfosClean:
             'author': 'str',
             'situation': 'str',
             'presentationDate': 'datetime64[ns]',  # 'datetime64[ns]' é usado para datas
+            'propositionType': 'str',
             'ementa': 'str',
             'regime': 'str',
             'situation': 'str'
@@ -37,15 +38,40 @@ class InfosClean:
 
         df_proposicao = df_proposicao.astype(dtype_mapping)
 
-        df_proposicao['author'] = df_proposicao['author'].apply(self.remove_extra_spaces)
+        df_proposicao['presentationDate'] = pd.to_datetime(df_proposicao['presentationDate'], errors='coerce')
 
         return df_proposicao
     
 
     def _create_first_df_tramitacao(self, api_results):
-        pass
 
-    def remove_extra_spaces(self, text):
-        if isinstance(text, str):  # Verifica se a entrada é uma string
-            return ' '.join(text.split())
-        return text
+        list_keys_tramitacao = ['data', 'local', 'historico', 'propositionId', 'passo']
+
+        data_for_dataframe = []
+
+        for j, i in enumerate(api_results):
+
+            for item in i['listaHistoricoTramitacoes']:
+                item['propositionId'] = j + 1
+                data_for_dataframe.append(item)
+
+        df_tramitacao = pd.DataFrame(data_for_dataframe, columns=list_keys_tramitacao)
+
+        df_tramitacao.rename(columns={'data': 'createdAt', 'local': 'local', 'historico': 'description'}, inplace=True)
+
+        dtype_mapping = {
+            'createdAt': 'datetime64[ns]',
+            'local': 'str', 
+            'description': 'str',
+            'propositionId': 'int'
+        }
+
+        df_tramitacao = df_tramitacao.astype(dtype_mapping)
+
+        df_tramitacao['createdAt'] = pd.to_datetime(df_tramitacao['createdAt'], errors='coerce')
+
+        df_tramitacao.drop(columns=['passo'], inplace=True)
+
+        print
+
+        return df_tramitacao
