@@ -10,6 +10,19 @@ services:
       MYSQL_DATABASE: ${DATABASE}
     ports:
       - "3307:3306"
+    # Comentado caso queria ter a permanencia dos dados
+    # volumes:     
+    #   - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+    ports:
+      - "3308:80"
+    depends_on:
+      - db
 
   app:
     build:
