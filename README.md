@@ -32,20 +32,20 @@ Desenvolver um pipeline de dados em Python para extrair informações sobre prop
 
 ### Pré-requisitos
 
-	.	Docker deve estar instalado em sua máquina.
+.	Docker deve estar instalado em sua máquina.
 
 ### Passos para Rodar
 
-	1.	Clone o Repositório:
+1. Clone o Repositório:
 
     ```
     git clone <URL_DO_REPOSITORIO>
     cd <DIRETORIO_DO_REPOSITORIO>
     ```
 
-    2.	Construir e Subir os Containers:
+2.	Construir e Subir os Containers:
     ```
     docker-compose up --build
     ```
 
-    **O código Python será executado automaticamente quando o container da aplicação for iniciado. O script Python realizará a extração, limpeza e carregamento dos dados.**
+**O código Python será executado automaticamente quando o container da aplicação for iniciado. O script Python realizará a extração, limpeza e carregamento dos dados.**
