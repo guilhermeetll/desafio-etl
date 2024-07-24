@@ -36,7 +36,7 @@ class InfosClean:
             'situation': 'str'
         }
 
-        df_proposicao = df_proposicao.astype(dtype_mapping)
+        df_proposicao = df_proposicao.astype(dtype_mapping).drop_duplicates()
 
         df_proposicao['presentationDate'] = pd.to_datetime(df_proposicao['presentationDate'], errors='coerce')
 
@@ -66,7 +66,7 @@ class InfosClean:
             'propositionId': 'int'
         }
 
-        df_tramitacao = df_tramitacao.astype(dtype_mapping)
+        df_tramitacao = df_tramitacao.astype(dtype_mapping).drop_duplicates()
 
         df_tramitacao['createdAt'] = pd.to_datetime(df_tramitacao['createdAt'], errors='coerce')
 

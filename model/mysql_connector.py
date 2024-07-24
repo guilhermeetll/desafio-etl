@@ -1,21 +1,18 @@
 import mysql.connector
 import os
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class MySQLConnector:
     def __init__(self):
-        try:
-            self.con = mysql.connector.connect(
-                host="localhost",
-                port=3307,
-                database=os.getenv("DATABASE"),
-                user="root",
-                password=os.getenv("ROOT_PASSWORD")
-            )
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
+        while True:
+            try:
+                self.__create_con()
+                break
+            except mysql.connector.Error as err:
+                time.sleep(1)
 
     def __enter__(self):
         self.cursor = self.con.cursor()
@@ -29,6 +26,15 @@ class MySQLConnector:
         self.cursor.execute(f"SHOW TABLES LIKE '{table_name}'")
         result = self.cursor.fetchone()
         return result is not None
+    
+    def __create_con(self):
+        self.con = mysql.connector.connect(
+            host="db",
+            port=3306,
+            database=os.getenv("DATABASE"),
+            user="root",
+            password=os.getenv("ROOT_PASSWORD")
+        )
 
     def _create_tables(self):
         table = {}

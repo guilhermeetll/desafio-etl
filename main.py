@@ -7,14 +7,8 @@ from controller.data_frame_uploader import DataFrameUploader
 
 if __name__ == '__main__':
 
-    try: 
-        initial_create = RunInitial()
-    except AttributeError:
-        print('Waiting for the db to finish rising to start executing the code ...')
-        time.sleep(20)
-        initial_create = RunInitial()
-    except:
-        raise ConnectionError('Error create db.')
+    print('Waiting for the db to finish rising to start executing the code ...')
+    initial_create = RunInitial()
     
     print('Start ///////////////////')
     infos_api = GetInfoAPI()

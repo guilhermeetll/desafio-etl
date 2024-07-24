@@ -10,3 +10,16 @@ services:
       MYSQL_DATABASE: ${DATABASE}
     ports:
       - "3307:3306"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.main
+    environment:
+      - DATABASE=${DATABASE}
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db_data:
