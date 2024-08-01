@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE}
+    ports:
+      - "3307:3306"
+    # Comentado caso queria ter a permanencia dos dados
+    # volumes:     
+    #   - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+    ports:
+      - "3308:80"
+    depends_on:
+      - db
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.main
+    environment:
+      - DATABASE=${DATABASE}
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db_data:
